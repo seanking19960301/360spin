@@ -44,3 +44,8 @@ npm run build:desktop
 ```
 
 Tauri emits Windows installer bundles under `src-tauri/target/release/bundle/`. A future GitHub release can attach the installer while the repository contains the source code. The local Python/model setup is currently separate from the installer and still needs packaging work before a one-click public release.
+
+
+## License
+
+The 360spin project source code is licensed under the MIT License; see [LICENSE](LICENSE). Third-party software and model assets retain their own licenses; see [THIRD-PARTY-LICENSES.md](THIRD-PARTY-LICENSES.md).
