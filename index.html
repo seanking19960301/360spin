@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f6f8" />
+    <title>360spin · 商品旋转视频</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="360spin 首页">
+          <span class="brand-mark" aria-hidden="true">↻</span>
+          <span>360<span class="brand-light">spin</span></span>
+        </a>
+        <div class="topbar-note"><span class="status-dot"></span>本地 AI 工作台</div>
+      </header>
+
+      <main>
+        <section class="intro">
+          <div class="eyebrow">PRODUCT VIDEO STUDIO</div>
+          <h1>让商品转起来</h1>
+          <p>添加不同角度的商品照片，预览旋转效果并导出视频。</p>
+        </section>
+
+        <section class="workspace" aria-label="商品旋转视频工作区">
+          <div class="controls-column">
+            <section class="panel mode-panel">
+              <div class="panel-heading compact-heading">
+                <div>
+                  <span class="step-label">生成方式</span>
+                  <h2>选择旋转来源</h2>
+                </div>
+              </div>
+              <label class="mode-option selected" id="ai-mode-card">
+                <input type="radio" name="generation-mode" value="ai" checked />
+                <span class="mode-radio" aria-hidden="true"></span>
+                <span class="mode-copy"><strong>本地 AI 建模</strong><small>从主视图重建 3D 商品，再渲染完整旋转</small></span>
+                <span class="mode-tag">本机运行</span>
+              </label>
+              <label class="mode-option" id="sequence-mode-card">
+                <input type="radio" name="generation-mode" value="sequence" />
+                <span class="mode-radio" aria-hidden="true"></span>
+                <span class="mode-copy"><strong>实拍视角过渡</strong><small>按照片顺序生成视角切换视频</small></span>
+              </label>
+              <div class="model-status" id="model-status"><span class="status-dot status-dot-muted"></span><span>检查本地模型…</span></div>
+            </section>
+
+            <section class="panel upload-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="step-label">01 / 图片</span>
+                  <h2>添加商品照片</h2>
+                </div>
+                <span class="count-pill" id="image-count">0 张</span>
+              </div>
+
+              <label class="dropzone" id="dropzone" for="image-input">
+                <input id="image-input" type="file" accept="image/jpeg,image/png,image/webp" multiple />
+                <span class="upload-icon" aria-hidden="true">＋</span>
+                <strong>选择照片或拖到这里</strong>
+                <span>JPG、PNG、WebP · 最多 24 张</span>
+              </label>
+
+              <div class="image-list-wrap">
+                <div class="list-caption" id="list-caption">AI 模式使用第一张照片；上移可更换主视图</div>
+                <ol class="image-list" id="image-list" aria-label="商品照片顺序"></ol>
+                <div class="empty-list" id="empty-list">还没有添加照片</div>
+              </div>
+
+              <div class="capture-tip">
+                <span class="tip-icon" aria-hidden="true">✦</span>
+                <p><strong>拍摄小建议</strong><br />尽量让商品居中、大小一致，并按绕商品一圈的顺序排列。角度覆盖越完整，旋转越自然。</p>
+              </div>
+            </section>
+
+            <section class="panel settings-panel">
+              <div class="panel-heading compact-heading">
+                <div>
+                  <span class="step-label">02 / 导出</span>
+                  <h2>视频设置</h2>
+                </div>
+              </div>
+              <div class="setting-row">
+                <label for="duration">旋转时长</label>
+                <div class="duration-control">
+                  <input id="duration" type="range" min="4" max="16" value="4" />
+                  <output id="duration-value" for="duration">4 秒</output>
+                </div>
+              </div>
+              <div class="setting-row">
+                <label for="background">背景颜色</label>
+                <select id="background">
+                  <option value="#f7f7f5">柔白</option>
+                  <option value="#ffffff">纯白</option>
+                  <option value="#e9edf2">浅灰</option>
+                  <option value="#20242b">深色</option>
+                </select>
+              </div>
+              <div class="setting-row">
+                <label for="format">视频格式</label>
+                <select id="format">
+                  <option value="webm">WebM（推荐）</option>
+                  <option value="mp4">MP4（浏览器支持时）</option>
+                </select>
+              </div>
+              <div class="format-note" id="format-note">视频在你的浏览器中本地生成，不会上传照片。</div>
+            </section>
+          </div>
+
+          <section class="preview-panel" aria-label="视频预览">
+            <div class="preview-topline">
+              <div>
+                <span class="step-label">实时预览</span>
+                <h2 id="preview-title">商品旋转预览</h2>
+              </div>
+              <span class="preview-badge"><span class="status-dot"></span>预览</span>
+            </div>
+
+            <div class="canvas-stage" id="canvas-stage">
+              <canvas id="preview-canvas" width="540" height="960" aria-label="商品旋转动画画布"></canvas>
+              <video id="generated-video" controls playsinline hidden></video>
+              <div class="canvas-empty" id="canvas-empty">
+                <div class="empty-orbit"><span>360°</span></div>
+                <strong>商品会显示在这里</strong>
+                <span>先添加一张或多张照片</span>
+              </div>
+              <div class="stage-footer"><span id="angle-indicator">等待照片</span><span>9:16 · AI 输出 288 × 512</span></div>
+            </div>
+
+            <div class="generation-note" id="generation-note">
+              <span class="note-icon" aria-hidden="true">i</span>
+              <p id="generation-note-copy">本地 AI 会根据第一张照片估算商品背面和侧面；这些未拍到的细节是模型推测，可能与实物不同。照片只在本机处理。</p>
+            </div>
+
+            <div class="export-area">
+              <button class="primary-button" id="export-button" type="button" disabled>
+                <span aria-hidden="true">✦</span>生成并下载视频
+              </button>
+              <div class="progress-wrap" id="progress-wrap" hidden>
+                <div class="progress-copy"><span id="progress-label">正在生成视频…</span><span id="progress-percent">0%</span></div>
+                <progress id="progress" max="100" value="0"></progress>
+              </div>
+              <a class="download-link" id="download-link" hidden>下载生成的视频</a>
+              <p class="export-meta" id="export-meta">上传至少一张照片即可预览</p>
+            </div>
+          </section>
+        </section>
+      </main>
+
+      <footer class="footer"><span>360spin</span><span>商品旋转视频工作台</span></footer>
+    </div>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

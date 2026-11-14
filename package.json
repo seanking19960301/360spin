@@ -1,0 +1,15 @@
+{
+  "name": "360spin",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "web": "node server.mjs",
+    "desktop": "tauri dev",
+    "build:web": "node build.mjs",
+    "build:desktop": "node build.mjs && tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}

@@ -1,0 +1,10 @@
+node_modules/
+.npm-cache/
+dist/
+src-tauri/target/
+.tmp/
+artifacts/
+__pycache__/
+*.py[cod]
+.env
+*.log

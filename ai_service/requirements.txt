@@ -1,0 +1,12 @@
+# TripoSR runtime dependencies used by 360spin (CPU or CUDA PyTorch is installed separately).
+# The upstream C++ torchmcubes extension is only used for mesh export; 360spin renders the
+# TripoSR scene directly and provides a clear fallback for that optional import on Windows.
+numpy<2
+omegaconf==2.3.0
+Pillow==10.1.0
+einops==0.7.0
+transformers==4.35.0
+trimesh==4.0.5
+rembg[cpu]
+huggingface-hub<1
+imageio[ffmpeg]
